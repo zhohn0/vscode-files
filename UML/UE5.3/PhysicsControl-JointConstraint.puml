@@ -1,0 +1,77 @@
+@startuml
+
+class FPhysicsControlData{
+    + float LinearStrength
+	+ float LinearDampingRatio
+	+ float LinearExtraDamping
+	+ float MaxForce
+	+ float AngularStrength
+    + float AngularDampingRatio
+	+ float AngularExtraDamping
+	+ float MaxTorque
+}
+
+class FConstraintDrive{
+    + float Stiffness
+    + float Damping
+    + float MaxForce
+}
+
+class FLinearDriveConstraint{
+    + FVector PositionTarget
+    + FVector VelocityTarget
+    + FConstraintDrive XDrive
+    + FConstraintDrive YDrive
+    + FConstraintDrive ZDrive
+}
+
+class FAngularDriveConstraint{
+    + FRotator OrientationTarget
+    + FVector AngularVelocityTarget
+    + FConstraintDrive TwistDrive
+    + FConstraintDrive SwingDrive
+    + FConstraintDrive SlerpDrive
+}
+
+class FConstraintProfileProperties{
+    + FLinearDriveConstraint LinearDrive
+    + FAngularDriveConstraint AngularDrive
+}
+
+class FConstraintInstance{
+    + FConstraintProfileProperties ProfileInstance
+}
+
+' 关联
+FConstraintInstance -up-> FConstraintProfileProperties
+FConstraintProfileProperties -up-> FLinearDriveConstraint
+FConstraintProfileProperties -up-> FAngularDriveConstraint
+FLinearDriveConstraint -up-> FConstraintDrive
+FAngularDriveConstraint -up-> FConstraintDrive
+
+class FPBDJointSettings{
+    + FVec3 LinearDrivePositionTarget
+	+ FVec3 LinearDriveVelocityTarget
+	+ FVec3 LinearDriveStiffness
+	+ FVec3 LinearDriveDamping
+	+ FVec3 LinearDriveMaxForce
+    + FRotation3 AngularDrivePositionTarget
+	+ FVec3 AngularDriveVelocityTarget
+    + FVec3 AngularDriveStiffness
+	+ FVec3 AngularDriveDamping
+	+ FVec3 AngularDriveMaxTorque
+}
+
+class FPBDJointConstraints{
+    - TArray<FPBDJointSettings> ConstraintSettings
+    - FHandles Handles
+}
+
+class FPBDRigidsEvolutionGBF{
+    # FPBDJointConstraints JointConstraints
+}
+' 关联
+FPBDJointConstraints -up-> FPBDJointSettings
+FPBDRigidsEvolutionGBF -up-> FPBDJointConstraints
+
+@enduml

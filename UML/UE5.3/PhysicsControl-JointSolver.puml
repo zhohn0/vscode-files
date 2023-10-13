@@ -1,0 +1,30 @@
+@startuml
+
+class FConstraintContainerSolver{
+
+}
+
+class FPBDJointContainerSolver{
+    - TArray<FPBDJointCachedSolver> LinearConstraintSolvers
+    + void ApplyPositionConstraints()
+}
+
+class FPBDConstraintGroupSolver{
+    # TArray<FConstraintContainerSolver*> PrioritizedConstraintContainerSolvers
+}
+
+class FPBDJointCachedSolver{
+    + void ApplyConstraints()
+    + void ApplyVelocityConstraints()
+    + void ApplyProjections()
+
+}
+
+' 继承
+FConstraintContainerSolver <|-- FPBDJointContainerSolver
+
+' 关联
+FPBDConstraintGroupSolver -left-> FConstraintContainerSolver
+FPBDJointContainerSolver -right-> FPBDJointCachedSolver
+
+@enduml
