@@ -1,30 +1,51 @@
 @startuml
 
+class FPBDConstraintGroupSolver{
+    # TArray<FConstraintContainerSolver*> PrioritizedConstraintContainerSolvers
+    + void GatherConstraints()
+}
+
 class FConstraintContainerSolver{
 
 }
 
 class FPBDJointContainerSolver{
     - TArray<FPBDJointCachedSolver> LinearConstraintSolvers
+    + void GatherInput()
     + void ApplyPositionConstraints()
 }
 
-class FPBDConstraintGroupSolver{
-    # TArray<FConstraintContainerSolver*> PrioritizedConstraintContainerSolvers
+class FAxisConstraintDatas{
+    + bool bValidDatas[3]
+    + void InitDatas() // Stiffness和Damping初始化
 }
 
 class FPBDJointCachedSolver{
-    + void ApplyConstraints()
+    - FConstraintSolverBody SolverBodies[2]
+    - FRigidTransform3 LocalConnectorXs[2]
+    - FVec3 LastDPs[2];
+	- FVec3 LastDQs[2];
+	- FVec3 CurrentPs[2];
+	- FRotation3 CurrentQs[2];
+    - FVec3 InitConstraintAxisLinearVelocities
+    - FVec3 InitConstraintAxisAngularVelocities
+    - FAxisConstraintDatas PositionConstraints
+	- FAxisConstraintDatas RotationConstraints
+	- FAxisConstraintDatas PositionDrives
+	- FAxisConstraintDatas RotationDrives
+    + void Init() // XPBD初始化
+    + void ApplyConstraints() // XPBD求解
     + void ApplyVelocityConstraints()
     + void ApplyProjections()
 
 }
 
 ' 继承
-FConstraintContainerSolver <|-- FPBDJointContainerSolver
+FConstraintContainerSolver <|-down- FPBDJointContainerSolver
 
 ' 关联
-FPBDConstraintGroupSolver -left-> FConstraintContainerSolver
-FPBDJointContainerSolver -right-> FPBDJointCachedSolver
+FPBDConstraintGroupSolver -up-> FConstraintContainerSolver
+FPBDJointContainerSolver -down-> FPBDJointCachedSolver
+FPBDJointCachedSolver -left-> FAxisConstraintDatas
 
 @enduml

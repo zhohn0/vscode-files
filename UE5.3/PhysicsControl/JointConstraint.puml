@@ -1,14 +1,14 @@
 @startuml
 
-class FPhysicsControlData{
-    + float LinearStrength
-	+ float LinearDampingRatio
-	+ float LinearExtraDamping
-	+ float MaxForce
-	+ float AngularStrength
-    + float AngularDampingRatio
-	+ float AngularExtraDamping
-	+ float MaxTorque
+class FPhysicsControl{
+    + TObjectPtr<UMeshComponent> ParentMeshComponent
+    + FName ParentBoneName
+    + TObjectPtr<UMeshComponent> ChildMeshComponent
+    + FName ChildBoneName
+    + FPhysicsControlData ControlData
+    + FPhysicsControlMultiplier ControlMultiplier
+    + FPhysicsControlTarget ControlTarget
+    + FPhysicsControlSettings ControlSettings
 }
 
 class FConstraintDrive{
@@ -40,6 +40,12 @@ class FConstraintProfileProperties{
 
 class FConstraintInstance{
     + FConstraintProfileProperties ProfileInstance
+    + void InitConstraint()
+    + void SetLinearDriveParams()
+    + void SetLinearPositionTarget()
+    + void SetAngularOrientationTarget()
+    + void SetLinearVelocityTarget()
+    + void SetAngularVelocityTarget()
 }
 
 ' 关联

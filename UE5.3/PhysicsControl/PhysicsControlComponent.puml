@@ -1,0 +1,114 @@
+@startuml
+
+class FPhysicsControlMultiplier{
+    + FVector LinearStrengthMultiplier
+    + FVector LinearDampingRatioMultiplier
+    + FVector LinearExtraDampingMultiplier
+    + FVector MaxForceMultiplier
+    + float AngularStrengthMultiplier
+    + float AngularDampingRatioMultiplier
+    + float AngularExtraDampingMultiplier
+    + float MaxTorqueMultiplier
+}
+class FPhysicsControlSettings{
+    + FVector ControlPoint
+    + bool bUseSkeletalAnimation
+    + float SkeletalAnimationVelocityMultiplier
+    + bool bDisableCollision
+    + bool bAutoDisable
+}
+
+class FPhysicsControlTarget{
+    + FVector TargetPosition
+    + FVector TargetVelocity
+    + FRotator TargetOrientation
+    + FVector TargetAngularVelocity
+    + bool bApplyControlPointToTarget
+}
+
+class FPhysicsControlData{
+    + float LinearStrength
+	+ float LinearDampingRatio
+	+ float LinearExtraDamping
+	+ float MaxForce
+	+ float AngularStrength
+    + float AngularDampingRatio
+	+ float AngularExtraDamping
+	+ float MaxTorque
+}
+
+class FPhysicsControl{
+    + TObjectPtr<UMeshComponent> ParentMeshComponent
+    + FName ParentBoneName
+    + TObjectPtr<UMeshComponent> ChildMeshComponent
+    + FName ChildBoneName
+    + FPhysicsControlData ControlData
+    + FPhysicsControlMultiplier ControlMultiplier
+    + FPhysicsControlTarget ControlTarget
+    + FPhysicsControlSettings ControlSettings
+}
+
+class FPhysicsBodyModifier{
+    + TObjectPtr<UMeshComponent> MeshComponent
+    + FName BoneName
+    + EPhysicsMovementType MovementType
+    + ECollisionEnabled::Type CollisionType
+    + float GravityMultiplier
+    + float PhysicsBlendWeight
+    + FVector KinematicTargetPosition
+    + FQuat KinematicTargetOrientation
+    + uint8 bUseSkeletalAnimation
+    + uint8 bUpdateKinematicFromSimulation
+    + uint8 bResetToCachedTarget
+}
+
+class FPhysicsControlState{
+    + TSharedPtr<FConstraintInstance> ConstraintInstance
+    + bool bEnabled
+}
+
+class FPhysicsControlRecord{
+    + FPhysicsControl PhysicsControl
+    + FPhysicsControlState PhysicsControlState
+}
+
+class FPhysicsControlComponentImpl{
+    + TMap<FName, FPhysicsControlRecord> PhysicsControlRecords
+	+ TMap<FName, FPhysicsBodyModifier> PhysicsBodyModifiers
+}
+
+class UPhysicsControlComponent{
+    # TPimplPtr<FPhysicsControlComponentImpl> Implementation
+
+    ' 提供创建Controls和Modifiers的函数
+    + FName CreateControl()
+    + bool CreateNamedControl()
+    + TArray<FName> CreateControlsFromSkeletalMeshBelow()
+    + TArray<FName> CreateControlsFromSkeletalMeshAndConstraintProfileBelow()
+    + TArray<FName> CreateControlsFromSkeletalMesh()
+    + TArray<FName> CreateControlsFromSkeletalMeshAndConstraintProfile()
+    + TMap<FName, FPhysicsControlLimbBones> GetLimbBonesFromSkeletalMesh()
+    + TMap<FName, FPhysicsControlNames> CreateControlsFromLimbBones()
+    + TMap<FName, FPhysicsControlNames> CreateControlsFromLimbBonesAndConstraintProfile()
+    + FName CreateBodyModifier()
+    + bool CreateNamedBodyModifier()
+    + TArray<FName> CreateBodyModifiersFromSkeletalMeshBelow()
+    + TMap<FName, FPhysicsControlNames> CreateBodyModifiersFromLimbBones()
+    + void CreateControlsAndBodyModifiersFromLimbBones()
+    + void UpdateControls()
+}
+
+' 关联
+UPhysicsControlComponent -up-> FPhysicsControlComponentImpl
+FPhysicsControlComponentImpl -left-> FPhysicsBodyModifier
+FPhysicsControlComponentImpl -up-> FPhysicsControlRecord
+FPhysicsControlRecord -up-> FPhysicsControl
+FPhysicsControlRecord -up-> FPhysicsControlState
+FPhysicsControl -up-> FPhysicsControlSettings
+FPhysicsControl -up-> FPhysicsControlTarget
+FPhysicsControl -up-> FPhysicsControlMultiplier
+FPhysicsControl -up-> FPhysicsControlData
+
+' 继承
+
+@enduml
