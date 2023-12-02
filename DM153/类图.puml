@@ -1,0 +1,84 @@
+@startuml
+
+' 逻辑层
+class UGraphTaskGameManager{
+    + void TickFramePresent() // BlueprintCallable
+    + void OnReceiveSyncData()
+}
+class UGameLoop{
+    + void CollectSyncData() // 收集同步信息
+}
+
+class UAIBall{
+    + void GetOwnPlayerBallRelationship() //持球关系类型
+}
+
+class UPhysicsState{
+    + bool bEnablePhysicsAnimation
+}
+
+class UActorBaseComponent{}
+class UPhysicsAgent{
+    - UPhysicsState* State 
+}
+UActorBaseComponent <|-- UPhysicsAgent
+
+class UPresentLayerInterface{
+    + TMap<int32, APresentCharacterBase*> Players
+    + void ConstructGame()
+    + void CreatePlayers()
+    + void UpdatePlayers()
+}
+
+class APresentCharacterBase{}
+class APresentPlayer{
+    + void UpdateSyncInfo()
+    + void BlueprintOnBeginPresent()
+}
+
+
+class FPlayerSyncData{
+    + bool HasBall
+    + bool bEnablePhysicsAnimation
+}
+
+APresentCharacterBase <|-- APresentPlayer
+UPresentLayerInterface -left-> APresentCharacterBase
+
+UBaseActorInterface <|-- UActorInternalInterface
+
+@enduml
+
+
+@startuml
+class UCollisionManager{
+    + void PostUpdate()
+    + void ProcessPhysicsAnimation()
+}
+@enduml
+
+@startuml
+class UPhysicsState{
+    + bool bEnablePhysicsAnimation
+}
+
+class UActorBaseComponent{}
+class UPhysicsAgent{
+    - UPhysicsState* State 
+}
+UActorBaseComponent <|-- UPhysicsAgent
+UPhysicsAgent -left-> UPhysicsState
+
+@enduml
+
+
+@startuml
+class UGameLoop{
+    + void CollectSyncData()
+}
+
+class FPlayerSyncData{
+    + bool HasBall
+    + bool bEnablePhysicsAnimation
+}
+@enduml

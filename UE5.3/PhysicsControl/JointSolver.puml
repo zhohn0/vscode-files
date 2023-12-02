@@ -13,6 +13,8 @@ class FPBDJointContainerSolver{
     - TArray<FPBDJointCachedSolver> LinearConstraintSolvers
     + void GatherInput()
     + void ApplyPositionConstraints()
+    + void ApplyVelocityConstraints()
+    + void ApplyProjectionConstraints()
 }
 
 class FAxisConstraintDatas{
@@ -37,6 +39,7 @@ class FPBDJointCachedSolver{
     + void ApplyConstraints() // XPBD求解
     + void ApplyVelocityConstraints()
     + void ApplyProjections()
+    - void InitDerivedState()
 
 }
 

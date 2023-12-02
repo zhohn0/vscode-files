@@ -1,0 +1,70 @@
+@startuml
+class APresentBall{
+    -FBallSyncData CurrentSyncData
+	-FBallSyncData PreviousSyncData
+    + void TickBallMotion_Physics()
+    + void UpdateSyncInfo()
+}
+
+class UGTSimEntity{
+
+}
+
+class UGTSimEntity_Ball{
+
+}
+
+class UGTSimWorld{
+    # TArray<class UGTSimEntity*> SimEntities
+    # rp3d::PhysicsWorld* InternalPhysicsWorld //RP3D
+    # void CreatePhysicsWorld()
+    + void Update()
+}
+class UGTSimWorldRebound{
+
+}
+
+class UBallMovementStrategy{
+    - FBallMovementState OldMovementState
+    - void ResolveCollisionWithFloor()
+}
+
+class UBMS_MathSimulated{
+    + void TickMove()
+    - void MoveOnParabola()
+    - void ResolveCollisionWithFloor()
+    - void MoveSlideOnFloor()
+}
+
+class UBallMovementAgent{
+    UBallMovementStrategy* SelectStrategy
+}
+
+class UBall{
+    + UBallMovementAgent* MovementAgent
+    + void Update()
+}
+class UGTTrajEvaluator_RealBallTrack{
+    + FFixedVector CurBallPosition
+    + FFixedQuat CurBallRotation
+    # UGTSimWorldRebound* SimWorldRebound
+    + UGTTrajData* Evaluate()
+    + void PureMathEvaluate_New()
+    + void PhysicsEvaluate_New()
+}
+class UBMS_FollowTrajectory{
+    # UBall* PureMathBall
+    - UGTTrajData* TrajectoryData
+    - UGTTrajEvaluator_RealBallTrack* TrajEvaluator_RealBallTrack
+}
+
+UBallMovementStrategy <|-- UBMS_MathSimulated
+UBallMovementStrategy <-- UBallMovementAgent
+UGTTrajEvaluator_RealBallTrack <-- UBMS_FollowTrajectory
+UBall <-- UBMS_FollowTrajectory
+UBallMovementAgent <-- UBall
+UGTSimWorld <|-- UGTSimWorldRebound
+UGTSimWorldRebound <-- UGTTrajEvaluator_RealBallTrack
+UGTSimEntity_Ball <|-- UGTSimEntity
+UGTSimEntity <-- UGTSimWorld
+@enduml

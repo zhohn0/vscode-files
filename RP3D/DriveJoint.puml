@@ -1,0 +1,84 @@
+@startuml
+class PhysicsWorld{
+    # ConstraintSolverSystem mConstraintSolverSystem
+    # DriveJointComponents mDriveJointsComponents
+    + Joint* createJoint()
+    + void update()
+}
+
+class ConstraintSolverSystem{
+    - SolveDriveJointSystem mSolveDriveJointSystem
+    + ConstraintSolverSystem()
+}
+
+class Components{
+    # Map<Entity, uint32> mMapEntityToComponentIndex
+}
+
+class DriveJointComponents{
+    - Entity* mJointEntities
+    - DriveJoint** mJoints
+    - Vector3* mLinearPositionTarget
+    - Vector3* mLinearVelocityTarget
+    - decimal* mLinearStiffness
+    - decimal* mLinearDamping
+    - Quaternion* mAngularPositionTarget
+    - Vector3* mAngularVelocityTarget
+    - decimal* mAngularStiffness
+    - decimal* mAngularDamping
+}
+
+class RigidBodyComponents{
+    - Vector3* mConstrainedLinearVelocities
+    - Vector3* mConstrainedAngularVelocities
+    - Vector3* mConstrainedPositions
+    - Quaternion* mConstrainedOrientations
+}
+
+class TransformComponents{
+    - Entity* mBodies
+    - Transform* mTransforms
+}
+
+class JointComponents{
+    - Entity* mJointEntities
+    - Entity* mBody1Entities
+    - Entity* mBody2Entities
+}
+
+class SolveDriveJointSystem{
+    - PhysicsWorld& mWorld
+    - RigidBodyComponents& mRigidBodyComponents
+    - TransformComponents& mTransformComponents
+    - JointComponents& mJointComponents
+    - DriveJointComponents& mDriveJointComponents
+}
+
+class DriveJointInfo{
+
+}
+
+Class Joint{
+    Entity mEntity
+    PhysicsWorld& mWorld
+}
+
+class DriveJoint{
+    + void setDriveJointSettings()
+}
+
+DriveJointInfo <.. DriveJoint
+DriveJoint <-- DriveJointComponents
+RigidBodyComponents <-- SolveDriveJointSystem
+DriveJointComponents <-- SolveDriveJointSystem
+TransformComponents <-- SolveDriveJointSystem
+JointComponents <-- SolveDriveJointSystem
+ConstraintSolverSystem <-- PhysicsWorld
+DriveJointComponents <-- PhysicsWorld
+SolveDriveJointSystem <-- ConstraintSolverSystem
+Components <|-- DriveJointComponents
+Components <|-- RigidBodyComponents
+Components <|-- JointComponents
+Components <|-- TransformComponents
+Joint <|-- DriveJoint
+@enduml
