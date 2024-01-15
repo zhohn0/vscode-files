@@ -1,19 +1,20 @@
 @startuml
-
 class URP3DPhysicsControlManager{
-    - URP3DScene* RP3DScene
-    - TMap<FName, FRP3DPhysicsControl> ControlRecords
+    + URP3DScene* RP3DScene
+    + TMap<FName, FRP3DPhysicsControl> ControlRecords;
+	+ TMap<FName, TArray<FName>> ControlSets;
+    + void Init()
     + void ApplyControls()
     + void CreateControl()
     + void SetControlSettings()
 }
 
 class URP3DScene{
+    + PhysicsCommon* RP3DPhysicsCommon
+	+ PhysicsWorld* RP3DPhysicsWorld
     + PhysicsWorld* CreateURP3DScene()
     + void Update()
-    + PhysicsWorld* GetPhysicsWorld()
 }
-
 
 URP3DScene <-- URP3DPhysicsControlManager
 @enduml
